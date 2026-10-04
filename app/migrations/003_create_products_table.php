@@ -25,26 +25,31 @@ class Create_products_table {
                     'auto_increment' => TRUE,
                     'null'           => FALSE,
                 ],
+
                 'product_name' => [
                     'type'       => 'VARCHAR',
                     'constraint' => 100,
                     'null'       => FALSE,
                 ],
+
                 'description' => [
                     'type' => 'TEXT',
                     'null' => TRUE,
                 ],
+
                 'price' => [
                     'type'       => 'DECIMAL',
                     'constraint' => '10,2',
                     'null'       => FALSE,
                 ],
+
                 'quantity' => [
                     'type'       => 'INT',
                     'constraint' => 11,
                     'null'       => FALSE,
                     'default'    => 0,
                 ],
+
                 'created_at' => [
                     'type'    => 'TIMESTAMP',
                     'null'    => FALSE,
