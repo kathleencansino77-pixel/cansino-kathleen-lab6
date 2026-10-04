@@ -41,11 +41,6 @@ class Products extends Controller
 
             $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            /*
-             * Convert image path to a complete URL.
-             * This allows your existing React getImageUrl()
-             * to display the image without changing the UI.
-             */
             foreach ($products as &$product) {
                 if (!empty($product['image'])) {
                     $product['image'] = $this->image_url($product['image']);
@@ -142,9 +137,6 @@ class Products extends Controller
 
         $this->check_post_size_exceeded();
 
-        /*
-         * React sends FormData when adding a product.
-         */
         $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
 
         if (
@@ -156,19 +148,12 @@ class Products extends Controller
             $data = $this->api->body();
         }
 
-        /*
-         * Get form values
-         */
         $brand = trim((string)($data['brand'] ?? ''));
         $product_name = trim((string)($data['product_name'] ?? ''));
         $description = trim((string)($data['description'] ?? ''));
         $price = $data['price'] ?? '';
         $quantity = $data['quantity'] ?? '';
 
-
-        /*
-         * Validation
-         */
         if ($brand === '') {
             $this->fail('Brand is required.', 400);
         }
@@ -193,7 +178,6 @@ class Products extends Controller
             $this->fail('Quantity cannot be negative.', 400);
         }
 
-
         /*
          * Upload image
          */
@@ -214,7 +198,6 @@ class Products extends Controller
                 );
             }
         }
-
 
         /*
          * Insert product
@@ -267,7 +250,6 @@ class Products extends Controller
             );
         }
 
-
         /*
          * Get inserted ID
          */
@@ -280,7 +262,6 @@ class Products extends Controller
                 500
             );
         }
-
 
         /*
          * Get newly-created product
@@ -321,23 +302,10 @@ class Products extends Controller
             );
         }
 
-
-        /*
-         * Return complete image URL
-         */
         if (!empty($product['image'])) {
             $product['image'] = $this->image_url($product['image']);
         }
 
-
-        /*
-         * IMPORTANT:
-         * React's loadProducts() expects:
-         *
-         * response.data.data
-         *
-         * so we return the product inside "data".
-         */
         $this->api->respond([
             'message' => 'Product created successfully.',
             'data' => $product
@@ -350,7 +318,6 @@ class Products extends Controller
     | PUT /api/products/{id}
     |--------------------------------------------------------------------------
     | POST /api/products/{id}/update
-    | Used by React when editing with a new image.
     |--------------------------------------------------------------------------
     */
 
@@ -358,16 +325,6 @@ class Products extends Controller
     {
         $method = $_SERVER['REQUEST_METHOD'] ?? '';
 
-        /*
-         * Accept:
-         *
-         * PUT /api/products/{id}
-         *
-         * OR
-         *
-         * POST /api/products/{id}/update
-         * with _method=PUT
-         */
         if (
             $method !== 'PUT' &&
             !(
@@ -385,7 +342,6 @@ class Products extends Controller
         }
 
         $this->check_post_size_exceeded();
-
 
         /*
          * Get existing product
@@ -421,7 +377,6 @@ class Products extends Controller
             $this->fail('Product not found.', 404);
         }
 
-
         /*
          * Get submitted data
          */
@@ -435,7 +390,6 @@ class Products extends Controller
         } else {
             $data = $this->api->body();
         }
-
 
         /*
          * Preserve old values if not supplied
@@ -455,7 +409,6 @@ class Products extends Controller
         $price = $data['price'] ?? $product['price'];
 
         $quantity = $data['quantity'] ?? $product['quantity'];
-
 
         /*
          * Validation
@@ -484,13 +437,11 @@ class Products extends Controller
             $this->fail('Quantity cannot be negative.', 400);
         }
 
-
         /*
          * Keep old image
          */
         $image_path = $product['image'];
         $new_image_uploaded = false;
-
 
         /*
          * Upload replacement image
@@ -513,7 +464,6 @@ class Products extends Controller
             $image_path = $uploaded_image;
             $new_image_uploaded = true;
         }
-
 
         /*
          * Update product
@@ -565,7 +515,6 @@ class Products extends Controller
             );
         }
 
-
         /*
          * Delete old image after successful update
          */
@@ -576,7 +525,6 @@ class Products extends Controller
         ) {
             $this->delete_image($product['image']);
         }
-
 
         /*
          * Return updated product
@@ -644,7 +592,6 @@ class Products extends Controller
             $this->fail('Invalid product ID.', 400);
         }
 
-
         /*
          * Get existing product
          */
@@ -669,7 +616,6 @@ class Products extends Controller
             $this->fail('Product not found.', 404);
         }
 
-
         /*
          * Get request data
          */
@@ -683,7 +629,6 @@ class Products extends Controller
         } else {
             $data = $this->api->body();
         }
-
 
         $brand = trim(
             (string)($data['brand'] ?? $product['brand'])
@@ -702,7 +647,6 @@ class Products extends Controller
         $quantity = $data['quantity'] ?? $product['quantity'];
 
         $image = $product['image'];
-
 
         /*
          * Validation
@@ -731,7 +675,6 @@ class Products extends Controller
             $this->fail('Quantity cannot be negative.', 400);
         }
 
-
         /*
          * Image
          */
@@ -755,7 +698,6 @@ class Products extends Controller
             $image = $uploaded_image;
             $new_image_uploaded = true;
         }
-
 
         /*
          * Update
@@ -782,6 +724,7 @@ class Products extends Controller
         );
 
         if (!$stmt) {
+
             if ($new_image_uploaded && $image) {
                 $this->delete_image($image);
             }
@@ -791,7 +734,6 @@ class Products extends Controller
                 500
             );
         }
-
 
         /*
          * Delete old image
@@ -803,7 +745,6 @@ class Products extends Controller
         ) {
             $this->delete_image($product['image']);
         }
-
 
         /*
          * Return updated product
@@ -860,7 +801,6 @@ class Products extends Controller
             $this->fail('Invalid product ID.', 400);
         }
 
-
         /*
          * Get product first
          */
@@ -883,7 +823,6 @@ class Products extends Controller
             );
         }
 
-
         /*
          * Delete database record
          */
@@ -900,14 +839,12 @@ class Products extends Controller
             );
         }
 
-
         /*
          * Delete image file
          */
         if (!empty($product['image'])) {
             $this->delete_image($product['image']);
         }
-
 
         $this->api->respond([
             'message' => 'Product deleted successfully.'
@@ -923,9 +860,13 @@ class Products extends Controller
     | Database:
     | uploads/products/product_xxx.jpg
     |
-    | Browser:
+    | Local:
     | http://localhost:3000/uploads/products/product_xxx.jpg
     |
+    | Render:
+    | https://cansino-kathleen-lab6.onrender.com/uploads/products/product_xxx.jpg
+    |
+    |--------------------------------------------------------------------------
     */
 
     private function image_url($image)
@@ -945,18 +886,35 @@ class Products extends Controller
             return $image;
         }
 
+        /*
+         * Normalize path
+         */
         $clean = ltrim(
             str_replace('\\', '/', $image),
             '/'
         );
 
         /*
-         * LavaLust's public directory is the web root
-         * when running:
+         * Build the current API host dynamically.
          *
-         * php lava serve
+         * Local:
+         * http://localhost:3000
+         *
+         * Render:
+         * https://cansino-kathleen-lab6.onrender.com
          */
-        return 'http://localhost:3000/' . $clean;
+        $scheme = 'http';
+
+        if (
+            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+            (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+        ) {
+            $scheme = 'https';
+        }
+
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:3000';
+
+        return $scheme . '://' . $host . '/' . $clean;
     }
 
 
@@ -1036,7 +994,6 @@ class Products extends Controller
             return false;
         }
 
-
         /*
          * Maximum 5MB
          */
@@ -1050,7 +1007,6 @@ class Products extends Controller
             return false;
         }
 
-
         /*
          * Allowed MIME types
          */
@@ -1060,7 +1016,6 @@ class Products extends Controller
             'image/webp' => 'webp',
             'image/gif'  => 'gif'
         ];
-
 
         /*
          * Detect real MIME type
@@ -1080,14 +1035,12 @@ class Products extends Controller
 
         finfo_close($finfo);
 
-
         if (!isset($allowed_types[$mime])) {
             return false;
         }
 
         $extension =
             $allowed_types[$mime];
-
 
         /*
          * Upload directory
@@ -1100,7 +1053,6 @@ class Products extends Controller
             DIRECTORY_SEPARATOR .
             'products' .
             DIRECTORY_SEPARATOR;
-
 
         /*
          * Create directory if needed
@@ -1118,7 +1070,6 @@ class Products extends Controller
             }
         }
 
-
         /*
          * Generate unique filename
          */
@@ -1128,11 +1079,9 @@ class Products extends Controller
             '.' .
             $extension;
 
-
         $destination =
             $upload_dir .
             $filename;
-
 
         /*
          * Move uploaded file
@@ -1145,7 +1094,6 @@ class Products extends Controller
         ) {
             return false;
         }
-
 
         /*
          * Save relative path in database
@@ -1166,7 +1114,6 @@ class Products extends Controller
             return;
         }
 
-
         /*
          * Remove URL if somehow stored
          */
@@ -1175,7 +1122,6 @@ class Products extends Controller
             '',
             $image_path
         );
-
 
         /*
          * Normalize path
@@ -1188,7 +1134,6 @@ class Products extends Controller
             ),
             DIRECTORY_SEPARATOR
         );
-
 
         /*
          * Prevent accidental public/public
@@ -1207,13 +1152,11 @@ class Products extends Controller
             );
         }
 
-
         $full_path =
             ROOT_DIR .
             'public' .
             DIRECTORY_SEPARATOR .
             $clean_path;
-
 
         if (is_file($full_path)) {
             @unlink($full_path);
