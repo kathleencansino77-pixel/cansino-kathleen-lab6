@@ -45,7 +45,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 /** @var object $router **/
 
 $router->get('/', function () {
-    header('Location: http://localhost:5173/');
+    header('Location: https://cansino-kathleen-lab6-frontend.onrender.com/');
     exit;
 });
 
