@@ -1,5 +1,6 @@
 <?php
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
+
 /**
  * ------------------------------------------------------------------
  * LavaLust - an opensource lightweight PHP MVC Framework
@@ -55,7 +56,6 @@ $config['api_helper_enabled'] = TRUE;
 |
 */
 $config['payload_token_expiration'] = 900;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -145,7 +145,7 @@ $config['users_table'] = 'users';
 | a browser, so set your real domain in production.
 |
 */
-$config['allow_origin'] = 'http://localhost:5173';
+$config['allow_origin'] = 'https://cansino-kathleen-lab6-frontend.onrender.com';
 
 /*
 |--------------------------------------------------------------------------
@@ -161,6 +161,7 @@ $config['refresh_token_table'] = 'refresh_tokens';
 |--------------------------------------------------------------------------
 | JWT Issuer
 |--------------------------------------------------------------------------
+|
 | This is used for the JWT Issuer claim (iss). Change it to your
 | application's name or URL.
 |
@@ -171,17 +172,17 @@ $config['jwt_issuer'] = 'your-app';
 |--------------------------------------------------------------------------
 | JWT Audience
 |--------------------------------------------------------------------------
-| This is used for the JWT Audience claim (aud). Change it to identify
-| the clients allowed to use the tokens.
+|
+| This is used to identify the clients allowed to use the tokens.
 |
 */
-
 $config['jwt_audience'] = 'your-app-clients';
 
 /*
 |--------------------------------------------------------------------------
 | Rate Limiting
 |--------------------------------------------------------------------------
+|
 | These settings are used for API rate limiting.
 |
 */
@@ -191,8 +192,9 @@ $config['rate_limit_enabled'] = true;
 |--------------------------------------------------------------------------
 | Rate Limiting Requests and Seconds
 |--------------------------------------------------------------------------
-| These settings define the number of requests allowed and the time 
-| window in seconds.
+|
+| These settings define the number of requests allowed in the
+| specified time window.
 |
 */
 $config['rate_limit_requests'] = 60;
@@ -201,6 +203,7 @@ $config['rate_limit_requests'] = 60;
 |--------------------------------------------------------------------------
 | Rate Limiting Seconds
 |--------------------------------------------------------------------------
+|
 | This setting defines the time window in seconds for rate limiting.
 |
 */
