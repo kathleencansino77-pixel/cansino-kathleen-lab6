@@ -178,9 +178,11 @@ class Products extends Controller
             $this->fail('Quantity cannot be negative.', 400);
         }
 
+
         /*
          * Upload image
          */
+
         $image_path = null;
 
         if (
@@ -199,9 +201,11 @@ class Products extends Controller
             }
         }
 
+
         /*
          * Insert product
          */
+
         try {
 
             $stmt = $this->db->raw(
@@ -250,9 +254,11 @@ class Products extends Controller
             );
         }
 
+
         /*
          * Get inserted ID
          */
+
         $product_id = $this->db->last_insert_id();
 
         if (!$product_id) {
@@ -263,9 +269,11 @@ class Products extends Controller
             );
         }
 
+
         /*
          * Get newly-created product
          */
+
         try {
 
             $stmt = $this->db->raw(
@@ -343,9 +351,11 @@ class Products extends Controller
 
         $this->check_post_size_exceeded();
 
+
         /*
          * Get existing product
          */
+
         try {
 
             $stmt = $this->db->raw(
@@ -377,9 +387,11 @@ class Products extends Controller
             $this->fail('Product not found.', 404);
         }
 
+
         /*
          * Get submitted data
          */
+
         $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
 
         if (
@@ -391,9 +403,11 @@ class Products extends Controller
             $data = $this->api->body();
         }
 
+
         /*
          * Preserve old values if not supplied
          */
+
         $brand = trim(
             (string)($data['brand'] ?? $product['brand'])
         );
@@ -410,9 +424,11 @@ class Products extends Controller
 
         $quantity = $data['quantity'] ?? $product['quantity'];
 
+
         /*
          * Validation
          */
+
         if ($brand === '') {
             $this->fail('Brand is required.', 400);
         }
@@ -437,15 +453,19 @@ class Products extends Controller
             $this->fail('Quantity cannot be negative.', 400);
         }
 
+
         /*
          * Keep old image
          */
+
         $image_path = $product['image'];
         $new_image_uploaded = false;
+
 
         /*
          * Upload replacement image
          */
+
         if (
             isset($_FILES['image']) &&
             isset($_FILES['image']['error']) &&
@@ -465,9 +485,11 @@ class Products extends Controller
             $new_image_uploaded = true;
         }
 
+
         /*
          * Update product
          */
+
         try {
 
             $stmt = $this->db->raw(
@@ -515,9 +537,11 @@ class Products extends Controller
             );
         }
 
+
         /*
          * Delete old image after successful update
          */
+
         if (
             $new_image_uploaded &&
             !empty($product['image']) &&
@@ -526,9 +550,11 @@ class Products extends Controller
             $this->delete_image($product['image']);
         }
 
+
         /*
          * Return updated product
          */
+
         try {
 
             $stmt = $this->db->raw(
@@ -592,9 +618,11 @@ class Products extends Controller
             $this->fail('Invalid product ID.', 400);
         }
 
+
         /*
          * Get existing product
          */
+
         $stmt = $this->db->raw(
             "SELECT
                 id,
@@ -616,9 +644,11 @@ class Products extends Controller
             $this->fail('Product not found.', 404);
         }
 
+
         /*
          * Get request data
          */
+
         $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
 
         if (
@@ -648,9 +678,11 @@ class Products extends Controller
 
         $image = $product['image'];
 
+
         /*
          * Validation
          */
+
         if ($brand === '') {
             $this->fail('Brand is required.', 400);
         }
@@ -675,9 +707,11 @@ class Products extends Controller
             $this->fail('Quantity cannot be negative.', 400);
         }
 
+
         /*
          * Image
          */
+
         $new_image_uploaded = false;
 
         if (
@@ -699,9 +733,11 @@ class Products extends Controller
             $new_image_uploaded = true;
         }
 
+
         /*
          * Update
          */
+
         $stmt = $this->db->raw(
             "UPDATE products
              SET
@@ -735,9 +771,11 @@ class Products extends Controller
             );
         }
 
+
         /*
          * Delete old image
          */
+
         if (
             $new_image_uploaded &&
             !empty($product['image']) &&
@@ -746,9 +784,11 @@ class Products extends Controller
             $this->delete_image($product['image']);
         }
 
+
         /*
          * Return updated product
          */
+
         $stmt = $this->db->raw(
             "SELECT
                 id,
@@ -801,9 +841,11 @@ class Products extends Controller
             $this->fail('Invalid product ID.', 400);
         }
 
+
         /*
          * Get product first
          */
+
         $stmt = $this->db->raw(
             "SELECT
                 id,
@@ -823,9 +865,11 @@ class Products extends Controller
             );
         }
 
+
         /*
          * Delete database record
          */
+
         $stmt = $this->db->raw(
             "DELETE FROM products
              WHERE id = ?",
@@ -839,9 +883,11 @@ class Products extends Controller
             );
         }
 
+
         /*
          * Delete image file
          */
+
         if (!empty($product['image'])) {
             $this->delete_image($product['image']);
         }
@@ -856,17 +902,6 @@ class Products extends Controller
     |--------------------------------------------------------------------------
     | IMAGE URL
     |--------------------------------------------------------------------------
-    |
-    | Database:
-    | uploads/products/product_xxx.jpg
-    |
-    | Local:
-    | http://localhost:3000/uploads/products/product_xxx.jpg
-    |
-    | Render:
-    | https://cansino-kathleen-lab6.onrender.com/uploads/products/product_xxx.jpg
-    |
-    |--------------------------------------------------------------------------
     */
 
     private function image_url($image)
@@ -875,44 +910,139 @@ class Products extends Controller
             return '';
         }
 
-        /*
-         * Already a complete URL
-         */
-        if (
-            strpos($image, 'http://') === 0 ||
-            strpos($image, 'https://') === 0 ||
-            strpos($image, 'data:') === 0
-        ) {
-            return $image;
-        }
+        $value = trim((string)$image);
 
         /*
-         * Normalize path
+         * Data URLs should be returned as-is.
          */
+
+        if (strpos($value, 'data:') === 0) {
+            return $value;
+        }
+
+
+        /*
+         * Old Render HTTP URL
+         *
+         * Convert:
+         * http://cansino-kathleen-lab6.onrender.com/...
+         *
+         * to:
+         * https://cansino-kathleen-lab6.onrender.com/...
+         */
+
+        if (
+            strpos(
+                $value,
+                'http://cansino-kathleen-lab6.onrender.com/'
+            ) === 0
+        ) {
+            return 'https://' . substr($value, 7);
+        }
+
+
+        /*
+         * Existing HTTPS URL
+         */
+
+        if (strpos($value, 'https://') === 0) {
+            return $value;
+        }
+
+
+        /*
+         * Existing localhost URL
+         *
+         * Keep localhost HTTP during local development.
+         */
+
+        if (
+            strpos(
+                $value,
+                'http://localhost:3000/'
+            ) === 0
+        ) {
+            return $value;
+        }
+
+
+        /*
+         * If another absolute HTTP URL exists,
+         * normalize it to a path.
+         */
+
+        if (strpos($value, 'http://') === 0) {
+            $value = preg_replace(
+                '#^http://[^/]+/#i',
+                '',
+                $value
+            );
+        }
+
+
+        /*
+         * Normalize path.
+         */
+
         $clean = ltrim(
-            str_replace('\\', '/', $image),
+            str_replace('\\', '/', $value),
             '/'
         );
 
+        $clean = preg_replace(
+            '#^public/#i',
+            '',
+            $clean
+        );
+
+
         /*
-         * Build the current API host dynamically.
+         * Detect protocol.
          *
-         * Local:
-         * http://localhost:3000
-         *
-         * Render:
-         * https://cansino-kathleen-lab6.onrender.com
+         * Render uses X-Forwarded-Proto because
+         * HTTPS is terminated by the reverse proxy.
          */
-        $scheme = 'http';
+
+        $forwarded_proto = strtolower(
+            $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''
+        );
+
+        if ($forwarded_proto === 'https') {
+
+            $scheme = 'https';
+
+        } elseif (
+            (!empty($_SERVER['HTTPS']) &&
+             $_SERVER['HTTPS'] !== 'off') ||
+            (isset($_SERVER['SERVER_PORT']) &&
+             (int)$_SERVER['SERVER_PORT'] === 443)
+        ) {
+
+            $scheme = 'https';
+
+        } else {
+
+            $scheme = 'http';
+        }
+
+
+        /*
+         * Render fallback.
+         *
+         * This guarantees HTTPS on Render even if
+         * the forwarded protocol is not available.
+         */
+
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:3000';
 
         if (
-            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
-            (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+            strpos(
+                strtolower($host),
+                '.onrender.com'
+            ) !== false
         ) {
             $scheme = 'https';
         }
-
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:3000';
 
         return $scheme . '://' . $host . '/' . $clean;
     }
@@ -980,6 +1110,7 @@ class Products extends Controller
         /*
          * Basic upload validation
          */
+
         if (
             !isset($file['error']) ||
             $file['error'] !== UPLOAD_ERR_OK
@@ -994,9 +1125,11 @@ class Products extends Controller
             return false;
         }
 
+
         /*
          * Maximum 5MB
          */
+
         $max_size = 5 * 1024 * 1024;
 
         if (
@@ -1007,9 +1140,11 @@ class Products extends Controller
             return false;
         }
 
+
         /*
          * Allowed MIME types
          */
+
         $allowed_types = [
             'image/jpeg' => 'jpg',
             'image/png'  => 'png',
@@ -1017,9 +1152,11 @@ class Products extends Controller
             'image/gif'  => 'gif'
         ];
 
+
         /*
          * Detect real MIME type
          */
+
         $finfo = finfo_open(
             FILEINFO_MIME_TYPE
         );
@@ -1033,7 +1170,15 @@ class Products extends Controller
             $file['tmp_name']
         );
 
-        finfo_close($finfo);
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT use finfo_close($finfo).
+         *
+         * PHP 8.5 deprecated finfo_close()
+         * because finfo objects are automatically
+         * released when no longer needed.
+         */
 
         if (!isset($allowed_types[$mime])) {
             return false;
@@ -1042,9 +1187,11 @@ class Products extends Controller
         $extension =
             $allowed_types[$mime];
 
+
         /*
          * Upload directory
          */
+
         $upload_dir =
             ROOT_DIR .
             'public' .
@@ -1054,9 +1201,11 @@ class Products extends Controller
             'products' .
             DIRECTORY_SEPARATOR;
 
+
         /*
          * Create directory if needed
          */
+
         if (!is_dir($upload_dir)) {
 
             if (
@@ -1070,9 +1219,11 @@ class Products extends Controller
             }
         }
 
+
         /*
          * Generate unique filename
          */
+
         $filename =
             'product_' .
             bin2hex(random_bytes(16)) .
@@ -1083,9 +1234,11 @@ class Products extends Controller
             $upload_dir .
             $filename;
 
+
         /*
          * Move uploaded file
          */
+
         if (
             !move_uploaded_file(
                 $file['tmp_name'],
@@ -1095,9 +1248,11 @@ class Products extends Controller
             return false;
         }
 
+
         /*
          * Save relative path in database
          */
+
         return 'uploads/products/' . $filename;
     }
 
@@ -1114,18 +1269,22 @@ class Products extends Controller
             return;
         }
 
+
         /*
          * Remove URL if somehow stored
          */
+
         $image_path = preg_replace(
             '#^https?://[^/]+/#',
             '',
             $image_path
         );
 
+
         /*
          * Normalize path
          */
+
         $clean_path = ltrim(
             str_replace(
                 ['/', '\\'],
@@ -1135,9 +1294,11 @@ class Products extends Controller
             DIRECTORY_SEPARATOR
         );
 
+
         /*
          * Prevent accidental public/public
          */
+
         if (
             strpos(
                 $clean_path,
@@ -1152,11 +1313,21 @@ class Products extends Controller
             );
         }
 
+
+        /*
+         * Build full file path
+         */
+
         $full_path =
             ROOT_DIR .
             'public' .
             DIRECTORY_SEPARATOR .
             $clean_path;
+
+
+        /*
+         * Delete file
+         */
 
         if (is_file($full_path)) {
             @unlink($full_path);
