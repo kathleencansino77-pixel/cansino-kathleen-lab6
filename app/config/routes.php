@@ -61,6 +61,7 @@ $router->get('status', 'MigrationController::status');
 $router->post('api/auth/login', 'Auth::login');
 $router->post('api/auth/register', 'Auth::register');
 $router->get('api/auth/me', 'Auth::me');
+$router->get('api/profile', 'Auth::me');
 $router->post('api/auth/logout', 'Auth::logout');
 $router->post('api/auth/refresh', 'Auth::refresh');
 
