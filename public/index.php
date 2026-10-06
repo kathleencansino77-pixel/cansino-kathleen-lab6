@@ -1,26 +1,5 @@
 <?php
 
-$allowedOrigins = [
-    'https://cansino-kathleen-lab6-frontend.onrender.com',
-    'https://api-tester.marasigan.dev',
-];
-
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
-if (in_array($origin, $allowedOrigins, true)) {
-    header("Access-Control-Allow-Origin: {$origin}");
-}
-
-header('Vary: Origin');
-header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With');
-header('Access-Control-Max-Age: 86400');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
-
 define('PREVENT_DIRECT_ACCESS', TRUE);
 
 /**
@@ -29,9 +8,9 @@ define('PREVENT_DIRECT_ACCESS', TRUE);
  * ------------------------------------------------------------------
  *
  * MIT License
- * 
+ *
  * Copyright (c) 2020 Ronald M. Marasigan
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -52,9 +31,8 @@ define('PREVENT_DIRECT_ACCESS', TRUE);
  *
  * @package LavaLust
  * @author Ronald M. Marasigan <ronald.marasigan@yahoo.com>
- * @copyright Copyright 2020 (https://ronmarasigan.github.io)
- * @since Version 1
- * @link https://lavalust.pinoywap.org
+ * @since Version 4
+ * @link https://github.com/ronmarasigan/LavaLust
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
@@ -62,33 +40,24 @@ define('PREVENT_DIRECT_ACCESS', TRUE);
  *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
  *---------------------------------------------------------------
- *
- * This variable must contain the name of your "scheme" directory.
- * Set the path if it is not in the same directory as this file.
- * 
- * NO TRAILING SLASH!
  */
+
 $system_path = 'scheme';
 
 /*
  *---------------------------------------------------------------
  * APPLICATION DIRECTORY NAME
  *---------------------------------------------------------------
- *
- * If you want this front controller to use a different "app"
- * directory than the default one you can set its name here.
- *
- * NO TRAILING SLASH!
  */
+
 $application_folder = 'app';
 
 /*
  *---------------------------------------------------------------
- * APPLICATION DIRECTORY NAME
+ * PUBLIC DIRECTORY NAME
  *---------------------------------------------------------------
- * This let you set up your public folder where css, js and other public,
- * files will be visible
  */
+
 $public_folder = 'public';
 
 /*
@@ -96,6 +65,7 @@ $public_folder = 'public';
  * Define Application Constants
  * ------------------------------------------------------
  */
+
 define('ROOT_DIR', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 define('SYSTEM_DIR', ROOT_DIR . $system_path . DIRECTORY_SEPARATOR);
 define('APP_DIR', ROOT_DIR . $application_folder . DIRECTORY_SEPARATOR);
@@ -106,5 +76,6 @@ define('PUBLIC_DIR', $public_folder);
  * Setup done? Then Hurray!
  * ------------------------------------------------------
  */
+
 require_once SYSTEM_DIR . 'kernel/LavaLust.php';
 ?>

@@ -45,22 +45,11 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |
 */
 
-/*
-|--------------------------------------------------------------------------
-| Main Route
-|--------------------------------------------------------------------------
-*/
-
 $router->get('/', function () {
     header('Location: https://cansino-kathleen-lab6-frontend.onrender.com/');
     exit;
 });
 
-/*
-|--------------------------------------------------------------------------
-| Migration Routes
-|--------------------------------------------------------------------------
-*/
 
 $router->get('create-migration/{migration_class}', 'MigrationController::create_migration');
 $router->get('migrate', 'MigrationController::migrate');
@@ -69,37 +58,20 @@ $router->get('rollback-all', 'MigrationController::rollback_all');
 $router->get('refresh', 'MigrationController::refresh');
 $router->get('status', 'MigrationController::status');
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
-
-/* Main application authentication routes */
 $router->post('api/auth/login', 'Auth::login');
 $router->post('api/auth/register', 'Auth::register');
 $router->get('api/auth/me', 'Auth::me');
 $router->post('api/auth/logout', 'Auth::logout');
 $router->post('api/auth/refresh', 'Auth::refresh');
 
-/*
-|--------------------------------------------------------------------------
-| API Tester Compatibility Routes
-|--------------------------------------------------------------------------
-|
-| The LavaLust API Tester uses /login, /logout, and /refresh.
-| These point to the same authentication controller methods.
-|
-*/
-
-$router->post('login', 'Auth::login');
-$router->post('logout', 'Auth::logout');
-$router->post('refresh', 'Auth::refresh');
+$router->post('api/login', 'Auth::login');
+$router->post('api/logout', 'Auth::logout');
+$router->post('api/refresh', 'Auth::refresh');
 
 /*
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------- 
 | Product API Routes
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------- 
 */
 
 $router->get('api/products', 'Products::index');
