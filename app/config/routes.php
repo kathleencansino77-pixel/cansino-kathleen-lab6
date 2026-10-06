@@ -1,5 +1,6 @@
 <?php
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
+
 /**
  * ------------------------------------------------------------------
  * LavaLust - an opensource lightweight PHP MVC Framework
@@ -40,16 +41,27 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 | -------------------------------------------------------------------
 | Here is where you can register web routes for your application.
 |
+| @var object $router
 |
 */
-/** @var object $router **/
+
+/*
+|--------------------------------------------------------------------------
+| Main Route
+|--------------------------------------------------------------------------
+*/
 
 $router->get('/', function () {
     header('Location: https://cansino-kathleen-lab6-frontend.onrender.com/');
     exit;
 });
 
-// Migration Routes
+/*
+|--------------------------------------------------------------------------
+| Migration Routes
+|--------------------------------------------------------------------------
+*/
+
 $router->get('create-migration/{migration_class}', 'MigrationController::create_migration');
 $router->get('migrate', 'MigrationController::migrate');
 $router->get('rollback', 'MigrationController::rollback');
@@ -57,18 +69,57 @@ $router->get('rollback-all', 'MigrationController::rollback_all');
 $router->get('refresh', 'MigrationController::refresh');
 $router->get('status', 'MigrationController::status');
 
-// Authentication Routes
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
+
+/* Main application authentication routes */
 $router->post('api/auth/login', 'Auth::login');
 $router->post('api/auth/register', 'Auth::register');
 $router->get('api/auth/me', 'Auth::me');
 $router->post('api/auth/logout', 'Auth::logout');
 $router->post('api/auth/refresh', 'Auth::refresh');
 
-// Product API Routes
+/*
+|--------------------------------------------------------------------------
+| API Tester Compatibility Routes
+|--------------------------------------------------------------------------
+|
+| The LavaLust API Tester uses /login, /logout, and /refresh.
+| These point to the same authentication controller methods.
+|
+*/
+
+$router->post('login', 'Auth::login');
+$router->post('logout', 'Auth::logout');
+$router->post('refresh', 'Auth::refresh');
+
+/*
+|--------------------------------------------------------------------------
+| Product API Routes
+|--------------------------------------------------------------------------
+*/
+
 $router->get('api/products', 'Products::index');
+
 $router->get('api/products/{id}', 'Products::show');
+
 $router->post('api/products', 'Products::store');
-$router->post('api/products/{id}/update', 'Products::update'); // edit with new image (POST + _method=PUT)
+
+/*
+| Product update with image
+| Uses POST + _method=PUT because multipart/form-data
+| does not reliably work with PUT in PHP.
+*/
+$router->post('api/products/{id}/update', 'Products::update');
+
+/* Standard REST update */
 $router->put('api/products/{id}', 'Products::update');
+
+/* Partial update */
 $router->patch('api/products/{id}', 'Products::patch');
+
+/* Delete product */
 $router->delete('api/products/{id}', 'Products::delete');
