@@ -50,7 +50,6 @@ $router->get('/', function () {
     exit;
 });
 
-
 $router->get('create-migration/{migration_class}', 'MigrationController::create_migration');
 $router->get('migrate', 'MigrationController::migrate');
 $router->get('rollback', 'MigrationController::rollback');
@@ -62,7 +61,6 @@ $router->post('api/auth/login', 'Auth::login');
 $router->post('api/auth/register', 'Auth::register');
 $router->get('api/auth/me', 'Auth::me');
 $router->get('api/profile', 'Auth::me');
-$router->get('api/list', 'Auth::list');
 $router->post('api/auth/logout', 'Auth::logout');
 $router->post('api/auth/refresh', 'Auth::refresh');
 
@@ -71,9 +69,9 @@ $router->post('api/logout', 'Auth::logout');
 $router->post('api/refresh', 'Auth::refresh');
 
 /*
-|-------------------------------------------------------------------------- 
+|--------------------------------------------------------------------------
 | Product API Routes
-|-------------------------------------------------------------------------- 
+|--------------------------------------------------------------------------
 */
 
 $router->get('api/products', 'Products::index');
@@ -97,3 +95,8 @@ $router->patch('api/products/{id}', 'Products::patch');
 
 /* Delete product */
 $router->delete('api/products/{id}', 'Products::delete');
+
+/* API Tester compatibility aliases */
+$router->get('api/list', 'Products::index');
+$router->put('api/update/{id}', 'Products::update');
+$router->delete('api/delete/{id}', 'Products::delete');
