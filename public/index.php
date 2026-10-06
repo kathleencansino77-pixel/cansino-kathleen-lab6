@@ -1,6 +1,17 @@
 <?php
 
-header('Access-Control-Allow-Origin: https://cansino-kathleen-lab6-frontend.onrender.com');
+$allowedOrigins = [
+    'https://cansino-kathleen-lab6-frontend.onrender.com',
+    'https://api-tester.marasigan.dev',
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: {$origin}");
+}
+
+header('Vary: Origin');
 header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With');
 header('Access-Control-Max-Age: 86400');
@@ -11,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 define('PREVENT_DIRECT_ACCESS', TRUE);
+
 /**
  * ------------------------------------------------------------------
  * LavaLust - an opensource lightweight PHP MVC Framework
@@ -56,7 +68,7 @@ define('PREVENT_DIRECT_ACCESS', TRUE);
  * 
  * NO TRAILING SLASH!
  */
-	$system_path 			= 'scheme';
+$system_path = 'scheme';
 
 /*
  *---------------------------------------------------------------
@@ -68,7 +80,7 @@ define('PREVENT_DIRECT_ACCESS', TRUE);
  *
  * NO TRAILING SLASH!
  */
-	$application_folder 	= 'app';
+$application_folder = 'app';
 
 /*
  *---------------------------------------------------------------
@@ -77,14 +89,14 @@ define('PREVENT_DIRECT_ACCESS', TRUE);
  * This let you set up your public folder where css, js and other public,
  * files will be visible
  */
-	$public_folder			= 'public';
+$public_folder = 'public';
 
 /*
  * ------------------------------------------------------
  * Define Application Constants
  * ------------------------------------------------------
  */
-define('ROOT_DIR',  dirname(__DIR__) . DIRECTORY_SEPARATOR);
+define('ROOT_DIR', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 define('SYSTEM_DIR', ROOT_DIR . $system_path . DIRECTORY_SEPARATOR);
 define('APP_DIR', ROOT_DIR . $application_folder . DIRECTORY_SEPARATOR);
 define('PUBLIC_DIR', $public_folder);
