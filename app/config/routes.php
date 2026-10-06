@@ -62,6 +62,7 @@ $router->post('api/auth/login', 'Auth::login');
 $router->post('api/auth/register', 'Auth::register');
 $router->get('api/auth/me', 'Auth::me');
 $router->get('api/profile', 'Auth::me');
+$router->get('api/list', 'Auth::list');
 $router->post('api/auth/logout', 'Auth::logout');
 $router->post('api/auth/refresh', 'Auth::refresh');
 

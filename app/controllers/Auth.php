@@ -69,7 +69,13 @@ class Auth extends Controller
         ----------------------------------------------------- */
 
         $stmt = $this->db->raw(
-            "SELECT id, username, email, password, role, is_active
+            "SELECT
+                id,
+                username,
+                email,
+                password,
+                role,
+                is_active
              FROM users
              WHERE username = ? OR email = ?
              LIMIT 1",
@@ -388,6 +394,39 @@ class Auth extends Controller
             'message' =>
                 'Authenticated user.',
             'user' => $user
+        ], 200);
+    }
+
+
+    /* =========================================================
+       LIST USERS
+    ========================================================= */
+
+    public function list()
+    {
+        $this->api->require_method('GET');
+
+        $this->api->require_jwt();
+
+        $stmt = $this->db->raw(
+            "SELECT
+                id,
+                username,
+                email,
+                role,
+                is_active,
+                created_at
+             FROM users
+             ORDER BY id ASC"
+        );
+
+        $users =
+            $stmt->fetchAll(
+                PDO::FETCH_ASSOC
+            );
+
+        $this->api->respond([
+            'users' => $users
         ], 200);
     }
 
