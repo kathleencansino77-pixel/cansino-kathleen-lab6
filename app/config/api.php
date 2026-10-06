@@ -89,6 +89,7 @@ $config['allow_origin'] = array_values(
         array_map('trim', explode(',', $allowed_origins))
     )
 );
+
 /*
 |--------------------------------------------------------------------------
 | Refresh Token Table
