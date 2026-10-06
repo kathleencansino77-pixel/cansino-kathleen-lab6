@@ -23,7 +23,7 @@ class Auth extends Controller
 
         $data = $this->api->body();
 
-        $login = $data['login'] ?? '';
+        $login = $data['login'] ?? $data['username'] ?? '';
         $password = $data['password'] ?? '';
 
         if ($login === '' || $password === '') {
