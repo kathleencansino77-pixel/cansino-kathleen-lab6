@@ -82,12 +82,9 @@ $config['users_table'] = 'users';
 |
 */
 
-$allowed_origins = getenv('ALLOW_ORIGIN') ?: '';
-
-$config['allow_origin'] = array_values(
-    array_filter(
-        array_map('trim', explode(',', $allowed_origins))
-    )
+$config['allow_origin'] = array(
+    'https://cansino-kathleen-lab6-frontend.onrender.com',
+    'https://api-tester.marasigan.dev'
 );
 
 /*
