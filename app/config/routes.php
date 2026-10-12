@@ -45,10 +45,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |
 */
 
-$router->get('/', function () {
-    header('Location: https://cansino-kathleen-lab6-frontend.onrender.com/');
-    exit;
-});
+$router->get('/', 'Welcome::index');
 
 $router->get('create-migration/{migration_class}', 'MigrationController::create_migration');
 $router->get('migrate', 'MigrationController::migrate');
