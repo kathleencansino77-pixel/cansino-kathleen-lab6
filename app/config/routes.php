@@ -45,7 +45,49 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |
 */
 
+/*
+|--------------------------------------------------------------------------
+| Default Welcome Route
+|--------------------------------------------------------------------------
+*/
+
 $router->get('/', 'Welcome::index');
+
+/*
+|--------------------------------------------------------------------------
+| API Information Route
+|--------------------------------------------------------------------------
+*/
+
+$router->get('api', function () {
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo json_encode([
+        'name' => 'LavaLust Product Management API',
+        'status' => 'ok',
+        'version' => '1.0.0',
+        'endpoints' => [
+            'POST /api/auth/register',
+            'POST /api/auth/login',
+            'POST /api/auth/refresh',
+            'POST /api/auth/logout',
+            'GET /api/auth/me',
+            'GET /api/profile',
+            'GET /api/products',
+            'GET /api/products/{id}',
+            'POST /api/products',
+            'PUT /api/products/{id}',
+            'PATCH /api/products/{id}',
+            'DELETE /api/products/{id}'
+        ]
+    ], JSON_UNESCAPED_SLASHES);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Migration Routes
+|--------------------------------------------------------------------------
+*/
 
 $router->get('create-migration/{migration_class}', 'MigrationController::create_migration');
 $router->get('migrate', 'MigrationController::migrate');
@@ -53,6 +95,12 @@ $router->get('rollback', 'MigrationController::rollback');
 $router->get('rollback-all', 'MigrationController::rollback_all');
 $router->get('refresh', 'MigrationController::refresh');
 $router->get('status', 'MigrationController::status');
+
+/*
+|--------------------------------------------------------------------------
+| Authentication API Routes
+|--------------------------------------------------------------------------
+*/
 
 $router->post('api/auth/login', 'Auth::login');
 $router->post('api/auth/register', 'Auth::register');
@@ -72,9 +120,7 @@ $router->post('api/refresh', 'Auth::refresh');
 */
 
 $router->get('api/products', 'Products::index');
-
 $router->get('api/products/{id}', 'Products::show');
-
 $router->post('api/products', 'Products::store');
 
 /*
@@ -82,6 +128,7 @@ $router->post('api/products', 'Products::store');
 | Uses POST + _method=PUT because multipart/form-data
 | does not reliably work with PUT in PHP.
 */
+
 $router->post('api/products/{id}/update', 'Products::update');
 
 /* Standard REST update */
